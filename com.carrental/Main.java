@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        CarRentalSystem system = new CarRentalSystem();
+        CarRentalSystem system = CarRentalSystem.getInstance(); //using .getInstance per Singleton
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -53,12 +53,12 @@ public class Main {
                     }
                 }
                 case 4 -> {
-                    System.out.print("Enter your user ID: ");
+                    System.out.print("Enter your username: ");
                     String userName = scanner.nextLine();
                     User rentingUser = system.findUserByName(userName);
 
                     if (rentingUser != null) {
-                        System.out.print("Enter car Model to rent: ");
+                        System.out.print("Enter Car Model to rent: ");
                         String carModel = scanner.nextLine();
                         Car rentingCar = system.findCarByModel(carModel);
 
@@ -67,6 +67,7 @@ public class Main {
                             int duration = scanner.nextInt();
                             Rental rental = new Rental(system.generateRentalId(), rentingUser, rentingCar, new Date(), duration);
                             system.addRental(rental);
+                            System.out.println("Your estimated rental will cost: " + rental.calculateTotalCost() );
                             System.out.println("Car rented successfully!");
 
                         } else {
@@ -80,11 +81,13 @@ public class Main {
                 }
 
                 case 5 -> {
-                    System.out.print("Enter your user ID: ");
-                    int returnUserId = scanner.nextInt();
-                    system.returnCar(returnUserId);
+                    System.out.print("Enter your username ");
+                    String returnUserName = scanner.nextLine();
+                    system.returnCar(returnUserName);
                     System.out.println("Car returned successfully!");
                 }
+
+
                 case 6 -> {
                     System.out.println("Thank you for using the Car Rental System!");
                     scanner.close();

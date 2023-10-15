@@ -11,12 +11,30 @@ import java.util.List;
 import java.util.Objects;
 
 public class CarRentalSystem {
+    private static CarRentalSystem instance = null;
     private List<User> listOfUsers = new ArrayList<>();
 
     public static final String CAR_FILE = "cars.dat";
     private List<Car> listOfCars = new ArrayList<>();
 
     private List<Rental> listOfRentals = new ArrayList<>();
+
+
+    //Singleton Design Pattern
+
+    // Private constructor to prevent instantiation
+    private CarRentalSystem(){
+        listOfCars = FileUtil.loadCarsFromFile(CAR_FILE);
+    }
+
+
+    // Public method to provide access to the instance
+    public static CarRentalSystem getInstance(){
+        if(instance == null){
+            instance = new CarRentalSystem();
+        }
+        return instance;
+    }
 
     public void registerUser(User user) {
         listOfUsers.add(user);
@@ -37,9 +55,10 @@ public class CarRentalSystem {
         return availableCars;
     }
 
-    public CarRentalSystem(){
-        listOfCars = FileUtil.loadCarsFromFile(CAR_FILE);
-    }
+//    public CarRentalSystem(){
+//        listOfCars = FileUtil.loadCarsFromFile(CAR_FILE);
+//    }
+
 
     // Other methods...
     public int generateUserId() {   //gen a unique user ID, using the size of the listOfUsers to get new ID
@@ -95,9 +114,9 @@ public class CarRentalSystem {
         listOfRentals.add(rental);
     }
 
-    public void returnCar(int returnUserId) {   //method marks the rental as complete and sets car's avaliability to true
+    public void returnCar(String returnUserName) {   //method marks the rental as complete and sets car's avaliability to true
         for (Rental rental : listOfRentals) {
-            if (rental.getUser().getUserId() == returnUserId && "Active".equals(rental.getStatus())) {
+            if (Objects.equals(rental.getUser().getUsername(), returnUserName) && "Active".equals(rental.getStatus())) {
                 rental.endRental();
                 break;
             }
